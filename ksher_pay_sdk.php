@@ -93,7 +93,6 @@ class KsherPay{
                 $data['signature'] = $this->ksher_sign($data);
                 $postdata = json_encode($data);
                 // $fields_string = http_build_query($data);
-                echo "postdata:".$postdata."/n";
                 curl_setopt($http,CURLOPT_POST, true);
                 curl_setopt($http,CURLOPT_POSTFIELDS, $postdata);
             }else{
