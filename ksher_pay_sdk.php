@@ -40,8 +40,8 @@ class KsherPay{
             $this->token
         );
         // $encoded_sign = bin2hex($encoded_sign);
-        echo "message:" . $message . "\n";
-        echo "sigature:" . $encoded_sign . "\n";
+        // echo "message:" . $message . "\n";
+        // echo "sigature:" . $encoded_sign . "\n";
         return $encoded_sign;
     }
     /**
@@ -117,16 +117,16 @@ class KsherPay{
             $output = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
             curl_close($http);
-            echo "\n";
-            echo "status_code" . $http_status . "\n";
-            echo 'output:' . $output . "/n";
+            // echo "\n";
+            // echo "status_code" . $http_status . "\n";
+            // echo 'output:' . $output . "/n";
 
             
             if($status_code == 200){
                 $response_array = json_decode($output, true);
-                echo "response_array;\n\n";
+                // echo "response_array;\n\n";
                 print_r($response_array);
-                echo "\n";
+                // echo "\n";
                 $resp_sign = $response_array["signature"];
                 unset($response_array["signature"]);
                 if(!$this->verify_ksher_sign($response_array, $resp_sign)){
@@ -155,5 +155,22 @@ class KsherPay{
         $data['timestamp'] = $this->time;
         $response = $this->_request($this->gateway_domain . $this->apiEndpoint, 'POST', $data);
         return $response;
+    }
+
+    public function query($order_id, $data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->gateway_domain . $this->apiEndpoint . '/' . $order_id;
+        $response = $this->_request($queryURL, 'GET', $data);
+    }
+
+    public function refund($order_id, $data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->gateway_domain . $this->apiEndpoint . '/' . $order_id;
+        $response = $this->_request($queryURL, 'PUT', $data);
+    }
+    public function cancle($order_id, $data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->gateway_domain . $this->apiEndpoint . '/' . $order_id;
+        $response = $this->_request($queryURL, 'DELETE', $data);
     }
 }

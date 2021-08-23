@@ -2,18 +2,13 @@
 php sdk to communicate with ksher payment gateway
 
 ## How to Demo
-1. open demo_redirectPay.php
+1. open runSDK.php
 2. uncomment and adjust gateway_domain and token to the one given to you by ksher
 ```php
 $gateway_domain='https://sandboxbkk.vip.ksher.net';
 $token=token123;
 ```
-3. adjust merchant_order_id to some unique id
-```php
-$merchant_order_id='phpsdk000001';
-```
-4. run the scipt
+3. run php 
 ```shell
-php demo_redirectPay.php
-
+php -S localhost:5000 -t ./views/
 ```
