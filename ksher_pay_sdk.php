@@ -30,38 +30,51 @@ class KsherPay{
      * @param $data
      * @param $private_key_content
      */
-    public function ksher_sign($data){
+    public function ksher_sign($endpoint, $data){
      
 
-        $message = $this->apiEndpoint . self::paramData( $data );
+        $message = $endpoint . self::paramData( $data );
         $encoded_sign = hash_hmac(
             "sha256",
             $message,
             $this->token
         );
-        // $encoded_sign = bin2hex($encoded_sign);
-        // echo "message:" . $message . "\n";
-        // echo "sigature:" . $encoded_sign . "\n";
+        // echo "<p>";
+        // echo "endpoint:" . $endpoint . "<br/>";
+        // echo "message:" . $message . "<br/>";
+        // echo "sigature:" . $encoded_sign . "<br/>";
+        // echo "</p>";
         return $encoded_sign;
     }
     /**
      * 验证签名
      */
-    public function verify_ksher_sign( $data, $sign){
-        // $sign = pack("H*",$sign);
-        echo "\n verify_ksher_sign \n";
-        echo 'data:' . $data;
-        echo "\n'";
-        $message = self::paramData( $data );
-        $encoded_sign = hash_hmac(
+    public function verify_ksher_sign($url, $data){
+        // in api reponse url will be the api endpoit 
+        // in webhook request url will be the whole url string of webhook
+
+        $resp_sign = $data["signature"];
+        unset($data["signature"]);
+
+        $message = $url . self::paramData( $data );
+
+        $encoded_sign = strtoupper(hash_hmac(
             "sha256",
             $message,
             $this->token
-        );
+        ));
+        
+        // echo "<p>";
+        // echo "verify_ksher_sign <br/>";
+        // echo "url:" . $url . "<br/>";
+        // echo "message:" . $message . "<br/>";
+        // echo "sigature:" . $encoded_sign . "<br/>";
+        // echo "resp signature:" . $resp_sign . "<br/>";
+        // echo "</p>";
         // $res = openssl_get_publickey($this->pubkey);
         // $result = openssl_verify($message, $sign, $res,OPENSSL_ALGO_MD5);
         // openssl_free_key($res);
-        return $encoded_sign == $sign;
+        return $encoded_sign == $resp_sign;
     }
     /**
      * 处理待加密的数据
@@ -70,6 +83,14 @@ class KsherPay{
         ksort($data);
         $message = '';
         foreach ($data as $key => $value) {
+            if(is_bool($value)){
+                if($value){
+                    $value = "True";
+                } else{
+                    $value = "False";
+                }
+            }
+                
             $message .= $key . $value;
         }
         $message = mb_convert_encoding($message, "UTF-8");
@@ -80,55 +101,34 @@ class KsherPay{
      * @params url //请求地址
      * @params data //请求的数据，数组格式
      * */
-    public function _request($url, $method, $data=array()){
+    public function _request($endpoint, $method, $data=array()){
 
         try {
             
-            
+            $url = $this->gateway_domain . $endpoint;
             $http = curl_init();
             curl_setopt($http, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-            
-            if($method='POST'){
- 
-                $data['signature'] = $this->ksher_sign($data);
-                $postdata = json_encode($data);
-                // $fields_string = http_build_query($data);
-                curl_setopt($http,CURLOPT_POST, true);
-                curl_setopt($http,CURLOPT_POSTFIELDS, $postdata);
-            }else{
-                if(!empty($data) && is_array($data)){
-                    $params = '';
-                    $data['signature'] = $this->ksher_sign($data);
-                    foreach($data as $temp_key =>$temp_value){
-                        $params .= ($temp_key."=".urlencode($temp_value)."&");
-                    }
-                    if(strpos($url, '?') === false){
-                        $url .= "?";
-                    }
-                    $url .= "&".$params;
-                }
-                curl_setopt($http, CURLOPT_URL, $url);
-            }
-            
+            $data['signature'] = $this->ksher_sign($endpoint,$data);
+            $postdata = json_encode($data);
+
+
+            curl_setopt($http,CURLOPT_POSTFIELDS, $postdata);
+            curl_setopt($http,CURLOPT_CUSTOMREQUEST, $method);
             curl_setopt($http, CURLOPT_URL, $url);
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
 
             $output = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
+
             curl_close($http);
-            // echo "\n";
-            // echo "status_code" . $http_status . "\n";
-            // echo 'output:' . $output . "/n";
+
 
             
-            if($status_code == 200){
-                $response_array = json_decode($output, true);
-                // echo "response_array;\n\n";
-                print_r($response_array);
-                // echo "\n";
-                $resp_sign = $response_array["signature"];
-                unset($response_array["signature"]);
-                if(!$this->verify_ksher_sign($response_array, $resp_sign)){
+            if($http_status == 200){
+                $response_array = (json_decode($output, true));
+
+            
+                if(!$this->verify_ksher_sign($endpoint, $response_array)){
                     $temp = array(
                                 "err_code"=> "VERIFY_KSHER_SIGN_FAIL",
                                 "err_msg"=> "verify signature failed",
@@ -152,24 +152,27 @@ class KsherPay{
 
     public function create($data){
         $data['timestamp'] = $this->time;
-        $response = $this->_request($this->gateway_domain . $this->apiEndpoint, 'POST', $data);
+        $response = $this->_request($this->apiEndpoint, 'POST', $data);
         return $response;
     }
 
     public function query($order_id, $data){
         $data['timestamp'] = $this->time;
-        $queryURL = $this->gateway_domain . $this->apiEndpoint . '/' . $order_id;
+        $queryURL = $this->apiEndpoint . '/' . $order_id;
         $response = $this->_request($queryURL, 'GET', $data);
+        return $response;
     }
 
     public function refund($order_id, $data){
         $data['timestamp'] = $this->time;
-        $queryURL = $this->gateway_domain . $this->apiEndpoint . '/' . $order_id;
+        $queryURL =$this->apiEndpoint . '/' . $order_id;
         $response = $this->_request($queryURL, 'PUT', $data);
+        return $response;
     }
-    public function cancle($order_id, $data){
+    public function void($order_id, $data){
         $data['timestamp'] = $this->time;
-        $queryURL = $this->gateway_domain . $this->apiEndpoint . '/' . $order_id;
+        $queryURL = $this->apiEndpoint . '/' . $order_id;
         $response = $this->_request($queryURL, 'DELETE', $data);
+        return $response;
     }
 }

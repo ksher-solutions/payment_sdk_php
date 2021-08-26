@@ -1,17 +1,22 @@
 <?php $title = '1914'; include("partials/header.php");?>
 
 <div class="p-3">
-<h1>Create Order</h1>
-<form name="createOrder" action="./runSDK.php" method='post'>
+<h1>query Order</h1>
+<form name="queryOrder" action="./runSDK.php" method='post'>
   <div class="mb-3">
     <label for="merchant_order_id" class="form-label">merchant_order_id</label>
     <input type="text" name="merchant_order_id" class="form-control" id="merchant_order_id" aria-describedby="mch_order_no_help">
-    <div id="mch_order_no_help" class="form-text">A unique order id to identifie a particular order</div>
+    <div id="mch_order_no_help" class="form-text">a order id that you want to refund</div>
   </div>
   <div class="mb-3">
-    <label for="amount_id" class="form-label">Amount(THB)</label>
-    <input type="text" name="amount" class="form-control" id="amount_id" aria-describedby="mch_order_no_help">
-    <div id="mch_order_no_help" class="form-text">a amount to be charge on this order eg: 100 (charging 100 bath)</div>
+    <label for="refund_order_id" class="form-label">refund_order_id</label>
+    <input type="text" name="refund_order_id" class="form-control" id="refund_order_id" aria-describedby="refund_order_id_help">
+    <div id="refund_order_id_help" class="form-text">Another unique id to identify this refund transaction</div>
+  </div>
+  <div class="mb-3">
+    <label for="refund_amount_id" class="form-label">Refund Amount(THB)</label>
+    <input type="text" name="refund_amount" class="form-control" id="refund_amount_id" aria-describedby="refund_amount_help">
+    <div id="refund_amount_help" class="form-text">an amount you want to refund eg: 100 (refunding 100 bath)</div>
   </div>
   <div class="mb-3">
     <label for="api_id" class="form-label">Select API</label>
@@ -21,17 +26,10 @@
     </select>
   </div>
 
-  <div class="mb-3" id="selectCscanb" style="display: none;">
-    <label for="payment_id" class="form-label">Select Payment Channel</label>
-    <select id="payment_id" name="payment_ch" class="form-select" aria-label="payment_select">
-      <option selected value='promptpay'>promptpay</option>
-      <option value="truemoney">truemoney</option>
-    </select>
-  </div>
 
 
 
-  <input type="hidden" name="crud" value="create">
+  <input type="hidden" name="crud" value="update">
   <button type="submit" class="btn btn-primary">Submit</button>
   
 </form>

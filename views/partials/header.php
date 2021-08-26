@@ -22,8 +22,15 @@
             <a class="nav-link" href="createOrder.php">Create</a>
           </li>
           <li class="nav-item">
-            <!-- <a class="nav-link" href="cscanb.php">Query</a> -->
+            <a class="nav-link" href="queryOrder.php">Query</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="refundOrder.php">Refund</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="voidOrder.php">Void</a>
+          </li>
+
 
       </div>
     </div>
