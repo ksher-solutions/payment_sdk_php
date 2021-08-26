@@ -8,7 +8,6 @@
 <?php 
 $token = getenv('TOKEN');
 $gateway_domain = getenv("GATEWAT_DOMAIN");
-echo 'hellllll';
 print_r($token);
 print_r($gateway_domain);
 ?>
