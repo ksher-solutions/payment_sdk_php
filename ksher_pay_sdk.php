@@ -55,6 +55,7 @@ class KsherPay{
 
         $resp_sign = $data["signature"];
         unset($data["signature"]);
+        unset($data["log_entry_url"]);
 
         $message = $url . self::paramData( $data );
 
