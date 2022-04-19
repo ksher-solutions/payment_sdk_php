@@ -25,10 +25,10 @@
             <a class="nav-link" href="queryOrder.php">Query</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="refundOrder.php">Refund</a>
+            <a class="nav-link" href="refundOrder.php">Refund/void</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="voidOrder.php">Void</a>
+            <a class="nav-link" href="finance.php">Financial</a>
           </li>
 
 

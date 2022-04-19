@@ -1,8 +1,8 @@
 <?php $title = '1914'; include("partials/header.php");?>
 
 <div class="p-3">
-<h1>query Order</h1>
-<form name="queryOrder" action="./runSDK.php" method='post'>
+<h1>refund Order</h1>
+<form name="refundOrder" action="./runSDK.php" method='post'>
   <div class="mb-3">
     <label for="merchant_order_id" class="form-label">merchant_order_id</label>
     <input type="text" name="merchant_order_id" class="form-control" id="merchant_order_id" aria-describedby="mch_order_no_help">
@@ -23,6 +23,8 @@
     <select id="api_id" name="api_type" class="form-select" aria-label="api_select" onchange="apiSelectChange()">
       <option selected value='redirect'>Redirect</option>
       <option value="cscanb">Cscanb</option>
+      <option value="bscanc">BscanC</option>
+      <option value="miniapp">MiniApp</option>
     </select>
   </div>
 
@@ -35,16 +37,6 @@
 </form>
 </div>
 
-
-<script type="text/javascript">
-    function apiSelectChange() {
-        if (document.getElementById("api_id").value == 'cscanb') {
-            document.getElementById("selectCscanb").style.display = "block";
-        } else {
-            document.getElementById("selectCscanb").style.display = "none";
-        }
-    }
-  </script>
 <article>
 <br style="clear: both" />
 </article>

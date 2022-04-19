@@ -18,6 +18,18 @@ class KsherPay{
         if($apiType == 'cscanb'){
             $this->apiEndpoint='/api/v1/cscanb/orders';
         }
+        else if($apiType == 'bscanc'){
+            $this->apiEndpoint='/api/v1/bscanc/orders';
+        }
+        else if($apiType == 'miniapp'){
+            $this->apiEndpoint='/api/v1/miniapp/orders';
+        }
+        else if($apiType == 'app'){
+            $this->apiEndpoint='/api/v1/app/orders';
+        }
+        else if($apiType == 'finance'){
+            $this->apiEndpoint='/api/v1/finance/settlements';
+        }
         else{
             $this->apiEndpoint='/api/v1/redirect/orders';
         }
@@ -123,13 +135,15 @@ class KsherPay{
 
             curl_close($http);
 
-
-            
             if($http_status == 200){
                 $response_array = (json_decode($output, true));
 
+                $url_not_verify = '/api/v1/finance/settlements';
             
-                if(!$this->verify_ksher_sign($endpoint, $response_array)){
+                if(strpos($endpoint,$url_not_verify) !== false ){
+                    // echo "not check verify this url ".$endpoint ." <br/>";
+                    return $output;
+                } else if(!$this->verify_ksher_sign($endpoint, $response_array)){
                     $temp = array(
                                 "err_code"=> "VERIFY_KSHER_SIGN_FAIL",
                                 "err_msg"=> "verify signature failed",
@@ -174,6 +188,34 @@ class KsherPay{
         $data['timestamp'] = $this->time;
         $queryURL = $this->apiEndpoint . '/' . $order_id;
         $response = $this->_request($queryURL, 'DELETE', $data);
+        return $response;
+    }
+
+    public function channels($data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->apiEndpoint . '/channels';
+        $response = $this->_request($queryURL, 'GET', $data);
+        return $response;
+    }
+
+    public function order($yyyymmdd, $data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->apiEndpoint . '/order'.'/'. $yyyymmdd;
+        $response = $this->_request($queryURL, 'GET', $data);
+        return $response;
+    }
+
+    public function settlements($yyyymmdd, $data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->apiEndpoint . '/'. $yyyymmdd;
+        $response = $this->_request($queryURL, 'GET', $data);
+        return $response;
+    }
+
+    public function settlement_order($data){
+        $data['timestamp'] = $this->time;
+        $queryURL = $this->apiEndpoint . '/settlement_order';
+        $response = $this->_request($queryURL, 'GET', $data);
         return $response;
     }
 }
