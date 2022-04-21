@@ -184,7 +184,7 @@ class KsherPay{
         $response = $this->_request($queryURL, 'PUT', $data);
         return $response;
     }
-    public function void($order_id, $data){
+    public function cancel($order_id, $data){
         $data['timestamp'] = $this->time;
         $queryURL = $this->apiEndpoint . '/' . $order_id;
         $response = $this->_request($queryURL, 'DELETE', $data);

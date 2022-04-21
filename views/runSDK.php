@@ -51,7 +51,7 @@
                 echo "</p>";
                 return;
             } else if($_POST["crud"]=='delete'){
-                $gateway_pay_response = $class->void($merchant_order_id,$gateway_pay_data);
+                $gateway_pay_response = $class->cancel($merchant_order_id,$gateway_pay_data);
                 echo "<h2>gateway_pay_response:</h2>";
                 echo "<p>";
                 print_r($gateway_pay_response);
@@ -100,16 +100,18 @@
                 print_r($bscanc_response);
                 echo "</p>";
             } else if($_POST["crud"]=='update'){
+                $bscanc_data = array(
+                    "mid" => "mch38026",
+                    "refund_amount" => round($_POST["refund_amount"], 2)*100,
+                    "refund_order_id" => $_POST["refund_order_id"]);
                 $bscanc_response = $class->refund($merchant_order_id,$bscanc_data);
-                $bscanc_data = array('refund_order_id'=>$_POST["refund_order_id"],
-                "refund_amount" => round($_POST["refund_amount"], 2)*100);
                 echo "<h2>gateway_pay_response:</h2>";
                 echo "<p>";
                 print_r($bscanc_response);
                 echo "</p>";
                 return;
             } else if($_POST["crud"]=='delete'){
-                $bscanc_response = $class->void($merchant_order_id,$bscanc_data);
+                $bscanc_response = $class->cancel($merchant_order_id,$bscanc_data);
                 echo "<h2>gateway_pay_response:</h2>";
                 echo "<p>";
                 print_r($bscanc_response);
@@ -255,7 +257,7 @@
                 echo "</p>";
                 return;
             } else if($_POST["crud"]=='delete'){
-                $miniapp_response = $class->void($merchant_order_id,$miniapp_data);
+                $miniapp_response = $class->cancel($merchant_order_id,$miniapp_data);
                 echo "<h2>gateway_pay_response:</h2>";
                 echo "<p>";
                 print_r($miniapp_response);
@@ -318,7 +320,7 @@
                 echo "</p>";
 
             } else if($_POST["crud"]=='delete'){
-                $gateway_pay_response = $class->void($merchant_order_id,$gateway_pay_data);
+                $gateway_pay_response = $class->cancel($merchant_order_id,$gateway_pay_data);
                 echo "<h2>gateway_pay_response:</h2>";
                 echo "<p>";
                 print_r($gateway_pay_response);
