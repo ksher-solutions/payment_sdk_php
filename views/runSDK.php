@@ -4,8 +4,8 @@
 <!-- <p>Method: <?php print_r($_POST) ;?></p> -->
 <?php
     include_once '../ksher_pay_sdk.php';
-    $gateway_domain='https://sandboxbkk.vip.ksher.net';
-    $token='186d6c953c90f39c2973e6dd2e110d4057194996ef08fb4b3338180517b509c7';
+    $gateway_domain='https://sandboxdoc.vip.ksher.net';
+    $token='your token';
     set_time_limit(0);
 
     // for Cscanb API
