@@ -34,8 +34,8 @@
             }
         } else {
             $merchant_order_id = $_POST["merchant_order_id"];
-
             if($_POST["crud"]=='read'){
+                $cscanb_data = array();
                 $cscanb_response = $class->query($merchant_order_id,$cscanb_data);
                 $cscanb_array = json_decode($cscanb_response, true);
                 echo "<h2>cscanb_response:</h2>";
@@ -44,7 +44,6 @@
                 echo "</p>";
             } else if($_POST["crud"]=='update'){
                 $cscanb_data = array(
-                    "mid" => "mch38026",
                     "refund_amount" => round($_POST["refund_amount"], 2)*100,
                     "refund_order_id" => $_POST["refund_order_id"]);
                 $cscanb_response = $class->refund($merchant_order_id,$cscanb_data);
@@ -55,6 +54,7 @@
                 echo "</p>";
                 return;
             } else if($_POST["crud"]=='delete'){
+                $cscanb_data = array();
                 $cscanb_response = $class->cancel($merchant_order_id,$cscanb_data);
                 $cscanb_array = json_decode($cscanb_response, true);
                 echo "<h2>cscanb_response:</h2>";
@@ -99,6 +99,7 @@
             $merchant_order_id = $_POST["merchant_order_id"];
 
             if($_POST["crud"]=='read'){
+                $bscanc_data = array( "mid" => "mch38026");
                 $bscanc_response = $class->query($merchant_order_id,$bscanc_data);
                 $bscanc_array = json_decode($bscanc_response, true);
                 echo "<h2>gateway_pay_response:</h2>";
@@ -118,6 +119,7 @@
                 echo "</p>";
                 return;
             } else if($_POST["crud"]=='delete'){
+                $bscanc_data = array( "mid" => "mch38026");
                 $bscanc_response = $class->cancel($merchant_order_id,$bscanc_data);
                 $bscanc_array = json_decode($bscanc_response, true);
                 echo "<h2>bscanc_response:</h2>";
